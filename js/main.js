@@ -48,7 +48,7 @@ function stopRecording() {
 				(function(col, i){
 					$.get(serverUrl + "/columns/" + colIDs[i], function(column){
 						logs += "GET: " + serverUrl + "/columns/" + colIDs[i] + " | SUCCESS\n";
-						logs += column + "\n";
+						logs += JSON.stringify(column) + "\n";
 						data[col.name].values = column.values;
 						columnDone++;
 						if(columnDone == colIDs.length) {
