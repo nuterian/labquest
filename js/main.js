@@ -31,9 +31,13 @@ function stopRecording() {
 		logs += "GET: " + serverUrl + "/control/stop | SUCCESS\n";
 		$.get(serverUrl + "/status", function(status) {
 			logs += "GET: " + serverUrl + "/status | SUCCESS\n";
+			logs += JSON.stringify(status) + "\n";
 			data = {};
 			columnDone = 0;
-			var set = status.sets[Object.keys(status.sets)[0]];
+			var setKeys = Object.keys(status.sets);
+			var setKey = setKeys[setKeys.length - 1];
+			var set = status.sets[setKey];
+			logs += "SELECTED SET: " + setKey + "\n";
 			var colIDs = set.colIDs;
 
 			for( var i = 0; i < colIDs.length; i++ ) {
@@ -44,6 +48,7 @@ function stopRecording() {
 				(function(col, i){
 					$.get(serverUrl + "/columns/" + colIDs[i], function(column){
 						logs += "GET: " + serverUrl + "/columns/" + colIDs[i] + " | SUCCESS\n";
+						logs += column + "\n";
 						data[col.name].values = column.values;
 						columnDone++;
 						if(columnDone == colIDs.length) {
@@ -98,5 +103,8 @@ $controlButton.fastButton(onControlClick);
 $controlButton.on("click", onControlClick);
 
 $logsBtn.fastButton(function() {
-	document.location.href = 'mailto:jugalm9@gmail.com?subject=Labquest&body=' + logs;
+	var body = logs;
+	body = body.replace(/\n/g, "%0D%0A");
+	body = body.replace(/&/g, "%26");
+	document.location.href = 'mailto:jugalm9@gmail.com?subject=Labquest&body=' + body;
 });
